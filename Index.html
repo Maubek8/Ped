@@ -1,0 +1,206 @@
+html>
+<head>
+    <base href="/">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PediGrowth - Monitoramento de Crescimento Infantil</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4B89DC;
+            --secondary: #FF7675;
+            --accent: #37B883;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .welcome-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            animation: fadeIn 1s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 1.5rem;
+        }
+
+        .welcome-title {
+            color: var(--primary);
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+            font-weight: bold;
+        }
+
+        .welcome-subtitle {
+            color: #666;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .login-form {
+            max-width: 300px;
+            margin: 0 auto;
+        }
+
+        .form-control {
+            border-radius: 25px;
+            padding: 12px 20px;
+            margin-bottom: 1rem;
+            border: 2px solid #eee;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 0.2rem rgba(75, 137, 220, 0.25);
+        }
+
+        .btn-enter {
+            background: var(--primary);
+            border: none;
+            border-radius: 25px;
+            padding: 12px 40px;
+            color: white;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .btn-enter:hover {
+            background: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(55, 184, 131, 0.3);
+        }
+
+        .features {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .feature-item {
+            text-align: center;
+            color: #666;
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .welcome-card {
+                padding: 1.5rem;
+            }
+
+            .features {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="welcome-card">
+    <!-- Logo SVG -->
+    <svg class="logo" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="45" fill="none" stroke="#4B89DC" stroke-width="5"/>
+        <path d="M30,50 Q50,20 70,50 T90,50" fill="none" stroke="#FF7675" stroke-width="5"/>
+        <circle cx="50" cy="50" r="10" fill="#37B883"/>
+    </svg>
+
+    <h1 class="welcome-title">PediGrowth</h1>
+    <p class="welcome-subtitle">
+        Monitore o crescimento do seu filho com precisão e facilidade.
+        Acompanhamento profissional e visualização intuitiva do desenvolvimento infantil.
+    </p>
+
+    <form class="login-form" onsubmit="handleLogin(event)">
+        <input type="email" class="form-control" placeholder="E-mail" required>
+        <input type="password" class="form-control" placeholder="Senha" required>
+        <button type="submit" class="btn btn-enter">
+            Entrar no Sistema
+        </button>
+    </form>
+
+    <div class="features">
+        <div class="feature-item">
+            <div class="feature-icon">📊</div>
+            <p>Gráficos Interativos</p>
+        </div>
+        <div class="feature-item">
+            <div class="feature-icon">📱</div>
+            <p>Acesso Mobile</p>
+        </div>
+        <div class="feature-item">
+            <div class="feature-icon">📋</div>
+            <p>Relatórios Detalhados</p>
+        </div>
+    </div>
+</div>
+
+<script>
+function handleLogin(event) {
+    event.preventDefault();
+    
+    // Adiciona animação de saída
+    document.querySelector('.welcome-card').style.animation = 'fadeOut 0.5s ease-out forwards';
+    
+    // Redireciona após a animação
+    setTimeout(() => {
+        window.location.href = 'dashboard.html'; // Redireciona para o dashboard
+    }, 500);
+}
+
+// Adiciona classe de animação ao carregar
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelector('.welcome-card').style.opacity = '1';
+});
+</script>
+
+<style>
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}
+</style>
+
+</body>
+</htm
