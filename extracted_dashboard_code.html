@@ -1,0 +1,333 @@
+<html><head><base href="/">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard de Crescimento Infantil</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  :root {
+    --primary: #4B89DC;
+    --secondary: #FF7675;
+    --success: #37B883;
+    --warning: #FFB142;
+    --danger: #FC5C65;
+  }
+
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #f5f6fa;
+  }
+
+  .dashboard-card {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    margin: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+  }
+
+  .dashboard-card:hover {
+    transform: translateY(-5px);
+  }
+
+  .metric-card {
+    text-align: center;
+    padding: 15px;
+    border-radius: 12px;
+    color: white;
+  }
+
+  .weight-card { background: var(--primary); }
+  .height-card { background: var(--secondary); }
+  .imc-card { background: var(--success); }
+
+  .chart-container {
+    position: relative;
+    margin: auto;
+    height: 300px;
+  }
+
+  .btn-action {
+    border-radius: 25px;
+    padding: 10px 20px;
+    margin: 5px;
+    transition: all 0.3s;
+  }
+
+  .btn-action:hover {
+    transform: scale(1.05);
+  }
+
+  .status-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 5px;
+  }
+
+  .status-normal { background: var(--success); }
+  .status-warning { background: var(--warning); }
+  .status-alert { background: var(--danger); }
+
+  @media (max-width: 768px) {
+    .dashboard-card {
+      margin: 10px 0;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="container-fluid py-4">
+  <h2 class="mb-4">Dashboard de Crescimento - João Silva (2 anos)</h2>
+
+  <!-- Métricas Principais -->
+  <div class="row">
+    <div class="col-md-4">
+      <div class="dashboard-card metric-card weight-card">
+        <h3>Peso Atual</h3>
+        <h2>12.5 kg</h2>
+        <p>↑ 0.5kg último mês</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="dashboard-card metric-card height-card">
+        <h3>Altura Atual</h3>
+        <h2>88 cm</h2>
+        <p>↑ 2cm último mês</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="dashboard-card metric-card imc-card">
+        <h3>IMC</h3>
+        <h2>16.2</h2>
+        <p>Peso adequado</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Botões de Ação -->
+  <div class="row mt-4">
+    <div class="col-12 text-center">
+      <button class="btn btn-primary btn-action" onclick="showAddMeasurement()">
+        + Nova Medição
+      </button>
+      <button class="btn btn-success btn-action" onclick="exportData()">
+        📊 Exportar Dados
+      </button>
+      <button class="btn btn-warning btn-action" onclick="showVaccines()">
+        💉 Vacinas
+      </button>
+    </div>
+  </div>
+
+  <!-- Gráficos -->
+  <div class="row mt-4">
+    <div class="col-md-6">
+      <div class="dashboard-card">
+        <h4>Curva de Crescimento - Peso</h4>
+        <div class="chart-container">
+          <canvas id="weightChart"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="dashboard-card">
+        <h4>Curva de Crescimento - Altura</h4>
+        <div class="chart-container">
+          <canvas id="heightChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Histórico de Medições -->
+  <div class="row mt-4">
+    <div class="col-12">
+      <div class="dashboard-card">
+        <h4>Histórico de Medições</h4>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Peso</th>
+                <th>Altura</th>
+                <th>IMC</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="measurementHistory">
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de Nova Medição -->
+<div class="modal fade" id="measurementModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Nova Medição</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="measurementForm">
+          <div class="mb-3">
+            <label class="form-label">Peso (kg)</label>
+            <input type="number" class="form-control" id="weightInput" step="0.1" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Altura (cm)</label>
+            <input type="number" class="form-control" id="heightInput" required>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" onclick="saveMeasurement()">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// Dados de exemplo
+const measurementData = {
+    dates: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+    weights: [11.0, 11.3, 11.7, 12.0, 12.2, 12.5],
+    heights: [82, 83, 84, 85, 86, 88]
+};
+
+// Configuração dos gráficos
+const weightChart = new Chart(document.getElementById('weightChart'), {
+    type: 'line',
+    data: {
+        labels: measurementData.dates,
+        datasets: [{
+            label: 'Peso (kg)',
+            data: measurementData.weights,
+            borderColor: '#4B89DC',
+            tension: 0.4,
+            fill: false
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                beginAtZero: false
+            }
+        }
+    }
+});
+
+const heightChart = new Chart(document.getElementById('heightChart'), {
+    type: 'line',
+    data: {
+        labels: measurementData.dates,
+        datasets: [{
+            label: 'Altura (cm)',
+            data: measurementData.heights,
+            borderColor: '#FF7675',
+            tension: 0.4,
+            fill: false
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                beginAtZero: false
+            }
+        }
+    }
+});
+
+// Funções de interação
+function showAddMeasurement() {
+    const modal = new bootstrap.Modal(document.getElementById('measurementModal'));
+    modal.show();
+}
+
+function saveMeasurement() {
+    const weight = document.getElementById('weightInput').value;
+    const height = document.getElementById('heightInput').value;
+    
+    if (weight && height) {
+        // Adicionar aos dados
+        measurementData.dates.push(new Date().toLocaleDateString('pt-BR', {month: 'short'}));
+        measurementData.weights.push(parseFloat(weight));
+        measurementData.heights.push(parseFloat(height));
+        
+        // Atualizar gráficos
+        weightChart.update();
+        heightChart.update();
+        
+        // Atualizar histórico
+        updateMeasurementHistory(weight, height);
+        
+        // Fechar modal
+        bootstrap.Modal.getInstance(document.getElementById('measurementModal')).hide();
+    }
+}
+
+function updateMeasurementHistory(weight, height) {
+    const tbody = document.getElementById('measurementHistory');
+    const row = tbody.insertRow(0);
+    const imc = (weight / Math.pow(height/100, 2)).toFixed(1);
+    
+    row.innerHTML = `
+        <td>${new Date().toLocaleDateString('pt-BR')}</td>
+        <td>${weight} kg</td>
+        <td>${height} cm</td>
+        <td>${imc}</td>
+        <td><span class="status-indicator ${getStatusClass(imc)}"></span>${getStatusText(imc)}</td>
+    `;
+}
+
+function getStatusClass(imc) {
+    if (imc < 15) return 'status-alert';
+    if (imc > 18) return 'status-warning';
+    return 'status-normal';
+}
+
+function getStatusText(imc) {
+    if (imc < 15) return 'Abaixo do peso';
+    if (imc > 18) return 'Acima do peso';
+    return 'Peso adequado';
+}
+
+function exportData() {
+    const data = {
+        weights: measurementData.weights,
+        heights: measurementData.heights,
+        dates: measurementData.dates
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'crescimento-dados.json';
+    a.click();
+}
+
+function showVaccines() {
+    alert('Calendário de vacinação em desenvolvimento!');
+}
+
+// Inicializar histórico
+updateMeasurementHistory(12.5, 88);
+updateMeasurementHistory(12.2, 86);
+updateMeasurementHistory(11.7, 84);
+</script>
+
+</body></html>
