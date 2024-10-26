@@ -1,246 +1,275 @@
-<html>
-<head>
-  <base href="/">
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PediGrowth - Welcome</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    :root {
-      --primary: #4B89DC;
-      --secondary: #FF7675;
-      --accent: #37B883;
-    }
+<html><head><base href="/">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PediGrowth - Welcome</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+:root {
+  --primary: #4B89DC;
+  --secondary: #FF7675;
+  --accent: #37B883;
+}
 
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      overflow: hidden;
-    }
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  overflow: hidden;
+}
 
-    .splash-screen {
-      position: fixed;
-      width: 100vw;
-      height: 100vh;
-      background: linear-gradient(135deg, #4B89DC 0%, #37B883 100%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      transition: transform 0.8s ease-in-out;
-    }
+.splash-screen {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(135deg, #4B89DC 0%, #37B883 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  transition: transform 0.8s ease-in-out;
+}
 
-    .splash-screen.slide-up {
-      transform: translateY(-100%);
-    }
+.splash-screen.slide-up {
+  transform: translateY(-100%);
+}
 
-    .logo-container {
-      text-align: center;
-      color: white;
-    }
+.logo-container {
+  text-align: center;
+  color: white;
+}
 
-    .logo {
-      font-size: 4rem;
-      margin-bottom: 1rem;
-      animation: pulse 2s infinite;
-    }
+.logo {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  animation: pulse 2s infinite;
+}
 
-    @keyframes pulse {
-      0% {
-        transform: scale(1);
-      }
-      50% {
-        transform: scale(1.1);
-      }
-      100% {
-        transform: scale(1);
-      }
-    }
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
 
-    .app-name {
-      font-size: 2.5rem;
-      font-weight: bold;
-      margin-bottom: 0.5rem;
-    }
+.app-name {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
 
-    .tagline {
-      font-size: 1.2rem;
-      opacity: 0.9;
-    }
+.tagline {
+  font-size: 1.2rem;
+  opacity: 0.9;
+}
 
-    .enter-btn {
-      margin-top: 2rem;
-      padding: 1rem 3rem;
-      font-size: 1.2rem;
-      background: white;
-      color: var(--primary);
-      border: none;
-      border-radius: 50px;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
+.enter-btn {
+  margin-top: 2rem;
+  padding: 1rem 3rem;
+  font-size: 1.2rem;
+  background: white;
+  color: var(--primary);
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
 
-    .enter-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    }
+.enter-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
 
-    /* Login Page Styles */
-    .login-page {
-      position: fixed;
-      width: 100vw;
-      height: 100vh;
-      background: linear-gradient(135deg, #4B89DC 0%, #37B883 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 900;
-    }
+/* Login Page Styles */
+.login-page {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(135deg, #4B89DC 0%, #37B883 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 900;
+}
 
-    .login-container {
-      background: white;
-      border-radius: 20px;
-      padding: 2rem;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-      width: 100%;
-      max-width: 900px;
-      margin: 2rem;
-    }
+.login-container {
+  background: white;
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  width: 100%;
+  max-width: 900px;
+  margin: 2rem;
+}
 
-    .role-selector {
-      display: flex;
-      gap: 2rem;
-      margin-bottom: 2rem;
-    }
+.role-selector {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
 
-    .role-card {
-      flex: 1;
-      background: #f8f9fa;
-      border-radius: 15px;
-      padding: 2rem;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.3s;
-      border: 3px solid transparent;
-    }
+.role-card {
+  flex: 1;
+  background: #f8f9fa;
+  border-radius: 15px;
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  border: 3px solid transparent;
+}
 
-    .role-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    }
+.role-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
 
-    .role-card.selected {
-      border-color: var(--primary);
-      background: #fff;
-    }
+.role-card.selected {
+  border-color: var(--primary);
+  background: #fff;
+}
 
-    .role-icon {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-    }
+.role-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
 
-    .login-form {
-      max-width: 400px;
-      margin: 0 auto;
-    }
+.login-form {
+  max-width: 400px;
+  margin: 0 auto;
+}
 
-    .features-list {
-      margin-top: 1rem;
-      padding-left: 1.5rem;
-    }
+.features-list {
+  margin-top: 1rem;
+  padding-left: 1.5rem;
+}
 
-    .features-list li {
-      margin-bottom: 0.5rem;
-      color: #666;
-    }
+.features-list li {
+  margin-bottom: 0.5rem;
+  color: #666;
+}
 
-    @media (max-width: 768px) {
-      .role-selector {
-        flex-direction: column;
-      }
-
-      .login-container {
-        margin: 1rem;
-        padding: 1rem;
-      }
-
-      .app-name {
-        font-size: 2rem;
-      }
-
-      .tagline {
-        font-size: 1rem;
-      }
-    }
-  </style>
+@media (max-width: 768px) {
+  .role-selector {
+    flex-direction: column;
+  }
+  
+  .login-container {
+    margin: 1rem;
+    padding: 1rem;
+  }
+  
+  .app-name {
+    font-size: 2rem;
+  }
+  
+  .tagline {
+    font-size: 1rem;
+  }
+}
+</style>
 </head>
-
 <body>
 
-  <div class="splash-screen" id="splashScreen">
-    <div class="logo-container">
-      <div class="logo">👶</div>
-      <div class="app-name">PediGrowth</div>
-      <div class="tagline">Acompanhamento inteligente do crescimento infantil</div>
-      <button class="enter-btn" id="enterBtn">Entrar</button>
-    </div>
+<!-- Splash Screen -->
+<div class="splash-screen" id="splashScreen">
+  <div class="logo-container">
+    <div class="logo">👶</div>
+    <div class="app-name">PediGrowth</div>
+    <div class="tagline">Acompanhamento inteligente do crescimento infantil</div>
+    <button class="enter-btn" id="enterBtn">Entrar</button>
   </div>
+</div>
 
-  <div class="login-page">
-    <div class="login-container">
-      <h2 class="text-center mb-4">Bem-vindo ao PediGrowth</h2>
-
-      <div class="role-selector" id="roleSelector">
-        <div class="role-card" data-role="professional">
-          <div class="role-icon">👨‍⚕️</div>
-          <h4>Área do Profissional</h4>
-          <p>Para pediatras e profissionais de saúde</p>
-          <div class="features-list">
-            <ul>
-              <li>Gerenciamento completo de pacientes</li>
-              <li>Cadastro de novos pacientes</li>
-              <li>Busca avançada</li>
-              <li>Relatórios e análises</li>
-              <li>Agenda de consultas</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="role-card" data-role="family">
-          <div class="role-icon">👨‍👩‍👧‍👦</div>
-          <h4>Área da Família</h4>
-          <p>Para pais e responsáveis</p>
-          <div class="features-list">
-            <ul>
-              <li>Acompanhamento do crescimento</li>
-              <li>Histórico de vacinas</li>
-              <li>Gráficos de desenvolvimento</li>
-              <li>Lembretes de consultas</li>
-              <li>Recomendações personalizadas</li>
-            </ul>
-          </div>
+<!-- Login Page -->
+<div class="login-page">
+  <div class="login-container">
+    <h2 class="text-center mb-4">Bem-vindo ao PediGrowth</h2>
+    
+    <div class="role-selector" id="roleSelector">
+      <div class="role-card" data-role="professional">
+        <div class="role-icon">👨‍⚕️</div>
+        <h4>Área do Profissional</h4>
+        <p>Para pediatras e profissionais de saúde</p>
+        <div class="features-list">
+          <ul>
+            <li>Gerenciamento completo de pacientes</li>
+            <li>Cadastro de novos pacientes</li>
+            <li>Busca avançada</li>
+            <li>Relatórios e análises</li>
+            <li>Agenda de consultas</li>
+          </ul>
         </div>
       </div>
-
-      <div id="loginForm" class="login-form" style="display: none;">
-        <h4 class="text-center mb-4" id="loginTitle"></h4>
-        <form id="authForm">
-          <input type="email" class="form-control mb-3" placeholder="Email" required>
-          <input type="password" class="form-control mb-3" placeholder="Senha" required>
-          <button type="submit" class="btn btn-primary w-100">Entrar</button>
-        </form>
-        <div class="text-center mt-3">
-          <a href="#" class="text-muted">Esqueceu sua senha?</a>
+      
+      <div class="role-card" data-role="family">
+        <div class="role-icon">👨‍👩‍👧‍👦</div>
+        <h4>Área da Família</h4>
+        <p>Para pais e responsáveis</p>
+        <div class="features-list">
+          <ul>
+            <li>Acompanhamento do crescimento</li>
+            <li>Histórico de vacinas</li>
+            <li>Gráficos de desenvolvimento</li>
+            <li>Lembretes de consultas</li>
+            <li>Recomendações personalizadas</li>
+          </ul>
         </div>
       </div>
     </div>
+    
+    <div id="loginForm" class="login-form" style="display: none;">
+      <h4 class="text-center mb-4" id="loginTitle"></h4>
+      <form id="authForm">
+        <input type="email" class="form-control mb-3" placeholder="Email" required>
+        <input type="password" class="form-control mb-3" placeholder="Senha" required>
+        <button type="submit" class="btn btn-primary w-100">Entrar</button>
+      </form>
+      <div class="text-center mt-3">
+        <a href="#" class="text-muted">Esqueceu sua senha?</a>
+      </div>
+    </div>
   </div>
+</div>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const splashScreen = document.getElementById('splashScreen');
-      const enterBtn = document.getElementById('enterBtn');
-      const roleCards = document.querySelectorAll('.role-card');
-      const loginForm = document.getElementById('loginForm');
-      const loginTitle = document.getElementById('loginTitle');
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const splashScreen = document.getElementById('splashScreen');
+  const enterBtn = document.getElementById('enterBtn');
+  const roleCards = document.querySelectorAll('.role-card');
+  const loginForm = document.getElementById('loginForm');
+  const loginTitle = document.getElementById('loginTitle');
+  const authForm = document.getElementById('authForm');
+  
+  enterBtn.addEventListener('click', () => {
+    splashScreen.classList.add('slide-up');
+  });
+  
+  roleCards.forEach(card => {
+    card.addEventListener('click', () => {
+      roleCards.forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      
+      loginForm.style.display = 'block';
+      
+      const role = card.dataset.role;
+      loginTitle.textContent = role === 'professional' ? 
+        'Login Área do Profissional' : 
+        'Login Área da Família';
+        
+      loginForm.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+  
+  authForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const selectedRole = document.querySelector('.role-card.selected').dataset.role;
+    
+    if (selectedRole === 'professional') {
+      window.location.href = '/dashboard/professional';
+    } else {
+      window.location.href = '/dashboard/family';
+    }
+  });
+});
+</script>
+
+</body></html>
