@@ -1,0 +1,468 @@
+<html><head><base href="/dashboard/growth/dashboard/settings">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PediGrowth - Configurações</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+:root {
+  --primary: #4B89DC;
+  --secondary: #FF7675;
+  --success: #37B883;
+  --warning: #FFB752;
+  --danger: #FF7675;
+  --sidebar-width: 250px;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  background: #f5f6fa;
+}
+
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: var(--sidebar-width);
+  background: white;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+  padding: 20px;
+  position: fixed;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.main-content {
+  flex: 1;
+  margin-left: var(--sidebar-width);
+  padding: 20px;
+}
+
+.settings-card {
+  background: white;
+  border-radius: 15px;
+  padding: 25px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.nav-links {
+  margin-top: 20px;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  padding: 12px 15px;
+  color: #666;
+  text-decoration: none;
+  border-radius: 8px;
+  margin-bottom: 5px;
+  transition: all 0.3s;
+}
+
+.nav-link:hover, .nav-link.active {
+  background: var(--primary);
+  color: white;
+}
+
+.settings-icon {
+  width: 40px;
+  height: 40px;
+  background: #f0f4f8;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 15px;
+  font-size: 20px;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: var(--primary);
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+.avatar-upload {
+  position: relative;
+  max-width: 150px;
+}
+
+.avatar-preview {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid var(--primary);
+}
+
+.avatar-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar-edit {
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+  width: 40px;
+  height: 40px;
+}
+
+.avatar-edit input {
+  display: none;
+}
+
+.avatar-edit label {
+  width: 40px;
+  height: 40px;
+  background: var(--primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  cursor: pointer;
+}
+
+.mobile-menu-btn {
+  display: none;
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 1001;
+  background: var(--primary);
+  border: none;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+    z-index: 1000;
+  }
+  
+  .main-content {
+    margin-left: 0;
+  }
+  
+  .mobile-menu-btn {
+    display: block;
+  }
+}
+</style>
+</head>
+<body>
+
+<button class="mobile-menu-btn">☰</button>
+
+<div class="dashboard-container">
+  <div class="sidebar">
+    <div class="profile-section">
+      <div class="profile-pic">👶</div>
+      <h5>João Silva</h5>
+      <p class="text-muted">2 anos e 3 meses</p>
+    </div>
+    
+    <div class="nav-links">
+      <a href="/dashboard" class="nav-link">
+        <i>📊</i> Dashboard
+      </a>
+      <a href="/dashboard/growth" class="nav-link">
+        <i>📈</i> Crescimento
+      </a>
+      <a href="/dashboard/weight" class="nav-link">
+        <i>⚖️</i> Peso
+      </a>
+      <a href="/dashboard/vaccines" class="nav-link">
+        <i>💉</i> Vacinas
+      </a>
+      <a href="/dashboard/appointments" class="nav-link">
+        <i>📅</i> Consultas
+      </a>
+      <a href="/dashboard/settings" class="nav-link active">
+        <i>⚙️</i> Configurações
+      </a>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <h2 class="mb-4">Configurações</h2>
+
+    <div class="settings-card">
+      <h4 class="mb-4">Perfil da Criança</h4>
+      
+      <div class="row">
+        <div class="col-md-3">
+          <div class="avatar-upload mb-4">
+            <div class="avatar-preview">
+              <img src="https://placekitten.com/150/150" alt="Foto do perfil">
+            </div>
+            <div class="avatar-edit">
+              <input type="file" id="imageUpload" accept=".png, .jpg, .jpeg">
+              <label for="imageUpload">📷</label>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-9">
+          <form>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Nome</label>
+                <input type="text" class="form-control" value="João Silva">
+              </div>
+              
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Data de Nascimento</label>
+                <input type="date" class="form-control" value="2021-04-15">
+              </div>
+              
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Gênero</label>
+                <select class="form-select">
+                  <option>Masculino</option>
+                  <option>Feminino</option>
+                  <option>Outro</option>
+                </select>
+              </div>
+              
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Tipo Sanguíneo</label>
+                <select class="form-select">
+                  <option>A+</option>
+                  <option>A-</option>
+                  <option>B+</option>
+                  <option>B-</option>
+                  <option>AB+</option>
+                  <option>AB-</option>
+                  <option>O+</option>
+                  <option>O-</option>
+                </select>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-card">
+      <h4 class="mb-4">Informações dos Pais/Responsáveis</h4>
+      
+      <form>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Nome da Mãe</label>
+            <input type="text" class="form-control" value="Maria Silva">
+          </div>
+          
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Telefone da Mãe</label>
+            <input type="tel" class="form-control" value="(11) 98765-4321">
+          </div>
+          
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Nome do Pai</label>
+            <input type="text" class="form-control" value="José Silva">
+          </div>
+          
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Telefone do Pai</label>
+            <input type="tel" class="form-control" value="(11) 98765-4322">
+          </div>
+          
+          <div class="col-md-12 mb-3">
+            <label class="form-label">Endereço</label>
+            <input type="text" class="form-control" value="Rua das Flores, 123">
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="settings-card">
+      <h4 class="mb-4">Preferências do Aplicativo</h4>
+      
+      <div class="mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div>
+            <h6 class="mb-0">Notificações Push</h6>
+            <small class="text-muted">Receba alertas sobre consultas e vacinas</small>
+          </div>
+          <label class="switch">
+            <input type="checkbox" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+        
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div>
+            <h6 class="mb-0">Notificações por Email</h6>
+            <small class="text-muted">Receba relatórios mensais por email</small>
+          </div>
+          <label class="switch">
+            <input type="checkbox">
+            <span class="slider"></span>
+          </label>
+        </div>
+        
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <h6 class="mb-0">Modo Escuro</h6>
+            <small class="text-muted">Alterar aparência do aplicativo</small>
+          </div>
+          <label class="switch">
+            <input type="checkbox">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+      
+      <div class="mb-4">
+        <h6>Unidades de Medida</h6>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Peso</label>
+            <select class="form-select">
+              <option>Quilogramas (kg)</option>
+              <option>Libras (lb)</option>
+            </select>
+          </div>
+          
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Altura</label>
+            <select class="form-select">
+              <option>Centímetros (cm)</option>
+              <option>Polegadas (in)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-card">
+      <h4 class="mb-4">Segurança</h4>
+      
+      <div class="mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div>
+            <h6 class="mb-0">Autenticação de Dois Fatores</h6>
+            <small class="text-muted">Adicione uma camada extra de segurança</small>
+          </div>
+          <label class="switch">
+            <input type="checkbox">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+      
+      <div class="mb-3">
+        <button class="btn btn-primary">Alterar Senha</button>
+        <button class="btn btn-outline-danger ms-2">Excluir Conta</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Menu mobile
+  const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+  const sidebar = document.querySelector('.sidebar');
+
+  mobileMenuBtn.addEventListener('click', () => {
+    sidebar.style.transform = sidebar.style.transform === 'translateX(0px)' 
+      ? 'translateX(-100%)' 
+      : 'translateX(0)';
+  });
+
+  // Fechar menu ao clicar fora
+  document.addEventListener('click', (e) => {
+    if (window.innerWidth <= 768 && 
+        !sidebar.contains(e.target) && 
+        !mobileMenuBtn.contains(e.target)) {
+      sidebar.style.transform = 'translateX(-100%)';
+    }
+  });
+
+  // Preview da imagem
+  const imageUpload = document.getElementById('imageUpload');
+  const previewImg = document.querySelector('.avatar-preview img');
+
+  imageUpload.addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        previewImg.src = e.target.result;
+      }
+      reader.readAsDataURL(file);
+    }
+  });
+
+  // Salvar alterações
+  const forms = document.querySelectorAll('form');
+  forms.forEach(form => {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      // Aqui você pode adicionar a lógica para salvar as alterações
+      alert('Alterações salvas com sucesso!');
+    });
+  });
+
+  // Excluir conta
+  const deleteBtn = document.querySelector('.btn-outline-danger');
+  deleteBtn.addEventListener('click', () => {
+    if (confirm('Tem certeza que deseja excluir sua conta? Esta ação não pode ser desfeita.')) {
+      // Aqui você pode adicionar a lógica para excluir a conta
+      alert('Conta excluída com sucesso!');
+    }
+  });
+});
+</script>
+
+</body></html>

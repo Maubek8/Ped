@@ -1,0 +1,390 @@
+<html><head><base href="/dashboard/growth">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PediGrowth - Crescimento</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root {
+  --primary: #4B89DC;
+  --secondary: #FF7675;
+  --accent: #37B883;
+  --sidebar-width: 250px;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  background: #f5f6fa;
+}
+
+/* Mantendo os estilos base do dashboard anterior */
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: var(--sidebar-width);
+  background: white;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+  padding: 20px;
+  position: fixed;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.main-content {
+  flex: 1;
+  margin-left: var(--sidebar-width);
+  padding: 20px;
+}
+
+/* Estilos específicos para a página de crescimento */
+.growth-chart-container {
+  background: white;
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.growth-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.metric-card {
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.metric-value {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--primary);
+  margin: 10px 0;
+}
+
+.percentile-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.percentile-bar {
+  width: 100%;
+  height: 10px;
+  background: #eee;
+  border-radius: 5px;
+  position: relative;
+  margin: 0 10px;
+}
+
+.percentile-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  background: var(--primary);
+  border-radius: 5px;
+}
+
+.growth-table {
+  background: white;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+.growth-notes {
+  background: white;
+  border-radius: 15px;
+  padding: 20px;
+  margin-top: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+/* Mantendo os estilos da navegação do dashboard anterior */
+.nav-links {
+  margin-top: 20px;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  padding: 12px 15px;
+  color: #666;
+  text-decoration: none;
+  border-radius: 8px;
+  margin-bottom: 5px;
+  transition: all 0.3s;
+}
+
+.nav-link:hover, .nav-link.active {
+  background: var(--primary);
+  color: white;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+    z-index: 1000;
+  }
+  
+  .main-content {
+    margin-left: 0;
+  }
+  
+  .mobile-menu-btn {
+    display: block;
+  }
+}
+
+.mobile-menu-btn {
+  display: none;
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 1001;
+  background: var(--primary);
+  border: none;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+}
+</style>
+</head>
+<body>
+
+<button class="mobile-menu-btn">☰</button>
+
+<div class="dashboard-container">
+  <!-- Sidebar similar ao dashboard anterior -->
+  <div class="sidebar">
+    <div class="profile-section">
+      <div class="profile-pic">👶</div>
+      <h5>João Silva</h5>
+      <p class="text-muted">2 anos e 3 meses</p>
+    </div>
+    
+    <div class="nav-links">
+      <a href="/dashboard" class="nav-link">
+        <i>📊</i> Dashboard
+      </a>
+      <a href="/dashboard/growth" class="nav-link active">
+        <i>📈</i> Crescimento
+      </a>
+      <a href="/dashboard/weight" class="nav-link">
+        <i>⚖️</i> Peso
+      </a>
+      <a href="/dashboard/vaccines" class="nav-link">
+        <i>💉</i> Vacinas
+      </a>
+      <a href="/dashboard/appointments" class="nav-link">
+        <i>📅</i> Consultas
+      </a>
+      <a href="/dashboard/settings" class="nav-link">
+        <i>⚙️</i> Configurações
+      </a>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <h2 class="mb-4">Acompanhamento de Crescimento</h2>
+
+    <div class="growth-metrics">
+      <div class="metric-card">
+        <h5>Altura Atual</h5>
+        <div class="metric-value">92 cm</div>
+        <div class="percentile-indicator">
+          <span>P50</span>
+          <div class="percentile-bar">
+            <div class="percentile-fill" style="width: 50%"></div>
+          </div>
+          <span>P100</span>
+        </div>
+      </div>
+
+      <div class="metric-card">
+        <h5>Velocidade de Crescimento</h5>
+        <div class="metric-value">0.8 cm/mês</div>
+        <p class="text-muted">Dentro do esperado</p>
+      </div>
+
+      <div class="metric-card">
+        <h5>Percentil</h5>
+        <div class="metric-value">65</div>
+        <p class="text-success">Desenvolvimento adequado</p>
+      </div>
+    </div>
+
+    <div class="growth-chart-container">
+      <h5>Curva de Crescimento</h5>
+      <canvas id="growthChart"></canvas>
+    </div>
+
+    <div class="growth-table">
+      <h5>Histórico de Medições</h5>
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Idade</th>
+              <th>Altura</th>
+              <th>Percentil</th>
+              <th>Observações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>01/06/2023</td>
+              <td>2a 3m</td>
+              <td>92 cm</td>
+              <td>65</td>
+              <td>Desenvolvimento normal</td>
+            </tr>
+            <tr>
+              <td>01/05/2023</td>
+              <td>2a 2m</td>
+              <td>91.2 cm</td>
+              <td>63</td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td>01/04/2023</td>
+              <td>2a 1m</td>
+              <td>90.4 cm</td>
+              <td>62</td>
+              <td>-</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="growth-notes">
+      <h5>Observações do Pediatra</h5>
+      <p>O crescimento está seguindo um padrão adequado, mantendo-se consistentemente acima do percentil 50. 
+         A velocidade de crescimento está dentro dos parâmetros esperados para a idade.</p>
+      <p>Próxima medição recomendada: 01/07/2023</p>
+    </div>
+  </div>
+</div>
+
+<script>
+// Configuração do gráfico de crescimento
+const growthCtx = document.getElementById('growthChart').getContext('2d');
+
+// Dados de exemplo para o gráfico
+const months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'];
+const growthData = [88, 89, 89.6, 90.4, 91.2, 92];
+const p3Data = [85, 85.5, 86, 86.5, 87, 87.5];
+const p50Data = [89, 89.5, 90, 90.5, 91, 91.5];
+const p97Data = [93, 93.5, 94, 94.5, 95, 95.5];
+
+new Chart(growthCtx, {
+  type: 'line',
+  data: {
+    labels: months,
+    datasets: [
+      {
+        label: 'Altura',
+        data: growthData,
+        borderColor: '#4B89DC',
+        tension: 0.4,
+        fill: false,
+        borderWidth: 3
+      },
+      {
+        label: 'P3',
+        data: p3Data,
+        borderColor: '#FF7675',
+        borderDash: [5, 5],
+        tension: 0.4,
+        fill: false
+      },
+      {
+        label: 'P50',
+        data: p50Data,
+        borderColor: '#37B883',
+        borderDash: [5, 5],
+        tension: 0.4,
+        fill: false
+      },
+      {
+        label: 'P97',
+        data: p97Data,
+        borderColor: '#FF7675',
+        borderDash: [5, 5],
+        tension: 0.4,
+        fill: false
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top',
+      },
+      tooltip: {
+        mode: 'index',
+        intersect: false
+      }
+    },
+    scales: {
+      y: {
+        title: {
+          display: true,
+          text: 'Altura (cm)'
+        }
+      },
+      x: {
+        title: {
+          display: true,
+          text: 'Mês'
+        }
+      }
+    }
+  }
+});
+
+// Menu mobile
+const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+const sidebar = document.querySelector('.sidebar');
+
+mobileMenuBtn.addEventListener('click', () => {
+  sidebar.style.transform = sidebar.style.transform === 'translateX(0px)' 
+    ? 'translateX(-100%)' 
+    : 'translateX(0)';
+});
+
+// Fechar menu ao clicar fora
+document.addEventListener('click', (e) => {
+  if (window.innerWidth <= 768 && 
+      !sidebar.contains(e.target) && 
+      !mobileMenuBtn.contains(e.target)) {
+    sidebar.style.transform = 'translateX(-100%)';
+  }
+});
+
+// Atualizar gráfico ao redimensionar
+window.addEventListener('resize', () => {
+  growthChart.resize();
+});
+</script>
+
+</body></html>

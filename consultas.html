@@ -1,0 +1,405 @@
+<html><head><base href="/dashboard/growth/dashboard/appointments">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PediGrowth - Consultas</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
+<style>
+:root {
+  --primary: #4B89DC;
+  --secondary: #FF7675;
+  --success: #37B883;
+  --warning: #FFB752;
+  --danger: #FF7675;
+  --sidebar-width: 250px;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  background: #f5f6fa;
+}
+
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: var(--sidebar-width);
+  background: white;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+  padding: 20px;
+  position: fixed;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.main-content {
+  flex: 1;
+  margin-left: var(--sidebar-width);
+  padding: 20px;
+}
+
+.appointment-card {
+  background: white;
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  transition: transform 0.3s ease;
+}
+
+.appointment-card:hover {
+  transform: translateY(-5px);
+}
+
+.nav-links {
+  margin-top: 20px;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  padding: 12px 15px;
+  color: #666;
+  text-decoration: none;
+  border-radius: 8px;
+  margin-bottom: 5px;
+  transition: all 0.3s;
+}
+
+.nav-link:hover, .nav-link.active {
+  background: var(--primary);
+  color: white;
+}
+
+.appointment-status {
+  display: inline-block;
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.status-scheduled {
+  background: var(--primary);
+  color: white;
+}
+
+.status-completed {
+  background: var(--success);
+  color: white;
+}
+
+.status-cancelled {
+  background: var(--danger);
+  color: white;
+}
+
+#calendar {
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.fc-event {
+  border: none;
+  padding: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.mobile-menu-btn {
+  display: none;
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 1001;
+  background: var(--primary);
+  border: none;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+    z-index: 1000;
+  }
+  
+  .main-content {
+    margin-left: 0;
+  }
+  
+  .mobile-menu-btn {
+    display: block;
+  }
+}
+
+.notes-section {
+  background: #f9f9f9;
+  border-radius: 8px;
+  padding: 15px;
+  margin-top: 10px;
+}
+
+.prescription-list {
+  list-style: none;
+  padding: 0;
+}
+
+.prescription-item {
+  background: #f5f5f5;
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-backdrop {
+  background: rgba(0,0,0,0.5);
+}
+
+</style>
+</head>
+<body>
+
+<button class="mobile-menu-btn">☰</button>
+
+<div class="dashboard-container">
+  <div class="sidebar">
+    <div class="profile-section">
+      <div class="profile-pic">👶</div>
+      <h5>João Silva</h5>
+      <p class="text-muted">2 anos e 3 meses</p>
+    </div>
+    
+    <div class="nav-links">
+      <a href="/dashboard" class="nav-link">
+        <i>📊</i> Dashboard
+      </a>
+      <a href="/dashboard/growth" class="nav-link">
+        <i>📈</i> Crescimento
+      </a>
+      <a href="/dashboard/weight" class="nav-link">
+        <i>⚖️</i> Peso
+      </a>
+      <a href="/dashboard/vaccines" class="nav-link">
+        <i>💉</i> Vacinas
+      </a>
+      <a href="/dashboard/appointments" class="nav-link active">
+        <i>📅</i> Consultas
+      </a>
+      <a href="/dashboard/settings" class="nav-link">
+        <i>⚙️</i> Configurações
+      </a>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2>Consultas</h2>
+      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newAppointmentModal">
+        <i>➕</i> Nova Consulta
+      </button>
+    </div>
+
+    <div class="row mb-4">
+      <div class="col-md-4">
+        <div class="appointment-card">
+          <h5>Próxima Consulta</h5>
+          <div class="d-flex align-items-center mt-3">
+            <div class="calendar-icon me-3">📅</div>
+            <div>
+              <h6 class="mb-1">Consulta de Rotina</h6>
+              <p class="mb-1">15 de Julho, 2023 - 14:30</p>
+              <span class="appointment-status status-scheduled">Agendada</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-4">
+        <div class="appointment-card">
+          <h5>Última Consulta</h5>
+          <div class="d-flex align-items-center mt-3">
+            <div class="calendar-icon me-3">✓</div>
+            <div>
+              <h6 class="mb-1">Check-up Mensal</h6>
+              <p class="mb-1">15 de Junho, 2023</p>
+              <span class="appointment-status status-completed">Realizada</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-4">
+        <div class="appointment-card">
+          <h5>Estatísticas</h5>
+          <div class="mt-3">
+            <p>Total de Consultas: 12</p>
+            <p>Consultas em 2023: 6</p>
+            <p>Próximas Consultas: 2</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-8">
+        <div class="appointment-card">
+          <div id="calendar"></div>
+        </div>
+      </div>
+      
+      <div class="col-md-4">
+        <div class="appointment-card">
+          <h5>Histórico de Consultas</h5>
+          <div class="timeline mt-4">
+            <div class="timeline-item mb-3">
+              <h6>15 de Junho, 2023</h6>
+              <p class="mb-2">Check-up Mensal</p>
+              <span class="appointment-status status-completed">Realizada</span>
+              <div class="notes-section">
+                <h6>Notas:</h6>
+                <p>Desenvolvimento normal para a idade. Mantendo boa alimentação.</p>
+                <h6>Prescrições:</h6>
+                <ul class="prescription-list">
+                  <li class="prescription-item">
+                    Vitamina D 400UI
+                    <button class="btn btn-sm btn-outline-primary">Ver Receita</button>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            
+            <div class="timeline-item mb-3">
+              <h6>15 de Maio, 2023</h6>
+              <p class="mb-2">Consulta de Rotina</p>
+              <span class="appointment-status status-completed">Realizada</span>
+              <div class="notes-section">
+                <h6>Notas:</h6>
+                <p>Apresentou leve resfriado. Recomendações de hidratação.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Nova Consulta -->
+<div class="modal fade" id="newAppointmentModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Agendar Nova Consulta</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="appointmentForm">
+          <div class="mb-3">
+            <label class="form-label">Tipo de Consulta</label>
+            <select class="form-select">
+              <option>Consulta de Rotina</option>
+              <option>Check-up Mensal</option>
+              <option>Consulta de Emergência</option>
+              <option>Avaliação de Desenvolvimento</option>
+            </select>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label">Data</label>
+            <input type="date" class="form-control">
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label">Horário</label>
+            <input type="time" class="form-control">
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label">Observações</label>
+            <textarea class="form-control" rows="3"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary">Agendar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Inicialização do FullCalendar
+  var calendarEl = document.getElementById('calendar');
+  var calendar = new FullCalendar.Calendar(calendarEl, {
+    initialView: 'dayGridMonth',
+    locale: 'pt-br',
+    headerToolbar: {
+      left: 'prev,next today',
+      center: 'title',
+      right: 'dayGridMonth,timeGridWeek,timeGridDay'
+    },
+    events: [
+      {
+        title: 'Consulta de Rotina',
+        start: '2023-07-15T14:30:00',
+        backgroundColor: '#4B89DC'
+      },
+      {
+        title: 'Check-up Mensal',
+        start: '2023-06-15T10:00:00',
+        backgroundColor: '#37B883'
+      }
+    ],
+    eventClick: function(info) {
+      // Aqui você pode adicionar a lógica para mostrar detalhes do evento
+      alert('Consulta: ' + info.event.title);
+    }
+  });
+  calendar.render();
+
+  // Menu mobile
+  const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+  const sidebar = document.querySelector('.sidebar');
+
+  mobileMenuBtn.addEventListener('click', () => {
+    sidebar.style.transform = sidebar.style.transform === 'translateX(0px)' 
+      ? 'translateX(-100%)' 
+      : 'translateX(0)';
+  });
+
+  // Fechar menu ao clicar fora
+  document.addEventListener('click', (e) => {
+    if (window.innerWidth <= 768 && 
+        !sidebar.contains(e.target) && 
+        !mobileMenuBtn.contains(e.target)) {
+      sidebar.style.transform = 'translateX(-100%)';
+    }
+  });
+
+  // Formulário de nova consulta
+  const appointmentForm = document.getElementById('appointmentForm');
+  const submitBtn = document.querySelector('#newAppointmentModal .btn-primary');
+
+  submitBtn.addEventListener('click', () => {
+    // Aqui você pode adicionar a lógica para salvar a nova consulta
+    alert('Consulta agendada com sucesso!');
+    bootstrap.Modal.getInstance(document.getElementById('newAppointmentModal')).hide();
+  });
+});
+</script>
+
+</body></html>

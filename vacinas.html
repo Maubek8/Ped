@@ -1,0 +1,367 @@
+<html><head><base href="/dashboard/growth/dashboard/vaccines">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PediGrowth - Vacinas</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+:root {
+  --primary: #4B89DC;
+  --secondary: #FF7675;
+  --success: #37B883;
+  --warning: #FFB752;
+  --danger: #FF7675;
+  --sidebar-width: 250px;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  background: #f5f6fa;
+}
+
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: var(--sidebar-width);
+  background: white;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+  padding: 20px;
+  position: fixed;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.main-content {
+  flex: 1;
+  margin-left: var(--sidebar-width);
+  padding: 20px;
+}
+
+.vaccine-card {
+  background: white;
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  transition: transform 0.3s ease;
+}
+
+.vaccine-card:hover {
+  transform: translateY(-5px);
+}
+
+.vaccine-status {
+  display: inline-block;
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.status-completed {
+  background: var(--success);
+  color: white;
+}
+
+.status-pending {
+  background: var(--warning);
+  color: white;
+}
+
+.status-late {
+  background: var(--danger);
+  color: white;
+}
+
+.vaccine-date {
+  color: #666;
+  font-size: 14px;
+}
+
+.nav-links {
+  margin-top: 20px;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  padding: 12px 15px;
+  color: #666;
+  text-decoration: none;
+  border-radius: 8px;
+  margin-bottom: 5px;
+  transition: all 0.3s;
+}
+
+.nav-link:hover, .nav-link.active {
+  background: var(--primary);
+  color: white;
+}
+
+.vaccine-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.summary-card {
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.summary-value {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+.vaccine-timeline {
+  position: relative;
+  padding-left: 30px;
+}
+
+.timeline-item {
+  position: relative;
+  padding-bottom: 20px;
+}
+
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -25px;
+  top: 5px;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: var(--primary);
+}
+
+.timeline-item::after {
+  content: '';
+  position: absolute;
+  left: -18px;
+  top: 20px;
+  width: 2px;
+  height: calc(100% - 20px);
+  background: #ddd;
+}
+
+.timeline-item:last-child::after {
+  display: none;
+}
+
+.mobile-menu-btn {
+  display: none;
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 1001;
+  background: var(--primary);
+  border: none;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+    z-index: 1000;
+  }
+  
+  .main-content {
+    margin-left: 0;
+  }
+  
+  .mobile-menu-btn {
+    display: block;
+  }
+  
+  .vaccine-summary {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+</head>
+<body>
+
+<button class="mobile-menu-btn">☰</button>
+
+<div class="dashboard-container">
+  <div class="sidebar">
+    <div class="profile-section">
+      <div class="profile-pic">👶</div>
+      <h5>João Silva</h5>
+      <p class="text-muted">2 anos e 3 meses</p>
+    </div>
+    
+    <div class="nav-links">
+      <a href="/dashboard" class="nav-link">
+        <i>📊</i> Dashboard
+      </a>
+      <a href="/dashboard/growth" class="nav-link">
+        <i>📈</i> Crescimento
+      </a>
+      <a href="/dashboard/weight" class="nav-link">
+        <i>⚖️</i> Peso
+      </a>
+      <a href="/dashboard/vaccines" class="nav-link active">
+        <i>💉</i> Vacinas
+      </a>
+      <a href="/dashboard/appointments" class="nav-link">
+        <i>📅</i> Consultas
+      </a>
+      <a href="/dashboard/settings" class="nav-link">
+        <i>⚙️</i> Configurações
+      </a>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <h2 class="mb-4">Carteira de Vacinação</h2>
+
+    <div class="vaccine-summary">
+      <div class="summary-card">
+        <h5>Vacinas Aplicadas</h5>
+        <div class="summary-value text-success">15</div>
+        <div class="text-muted">Total</div>
+      </div>
+
+      <div class="summary-card">
+        <h5>Próximas Doses</h5>
+        <div class="summary-value text-warning">2</div>
+        <div class="text-muted">Pendentes</div>
+      </div>
+
+      <div class="summary-card">
+        <h5>Atrasadas</h5>
+        <div class="summary-value text-danger">1</div>
+        <div class="text-muted">Regularizar</div>
+      </div>
+    </div>
+
+    <div class="alert alert-warning" role="alert">
+      <strong>Atenção!</strong> Há uma vacina atrasada. Entre em contato com seu pediatra para regularização.
+    </div>
+
+    <div class="vaccine-timeline">
+      <div class="timeline-item">
+        <div class="vaccine-card">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="mb-0">BCG</h5>
+            <span class="vaccine-status status-completed">Aplicada</span>
+          </div>
+          <p>Proteção contra tuberculose</p>
+          <div class="vaccine-date">Aplicada em: 01/01/2021</div>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="vaccine-card">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="mb-0">Hepatite B (3ª dose)</h5>
+            <span class="vaccine-status status-late">Atrasada</span>
+          </div>
+          <p>Proteção contra Hepatite B</p>
+          <div class="vaccine-date">Prevista para: 01/05/2023</div>
+          <button class="btn btn-primary mt-3">Agendar Aplicação</button>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="vaccine-card">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="mb-0">Pentavalente (DTP + Hib + HB)</h5>
+            <span class="vaccine-status status-pending">Agendada</span>
+          </div>
+          <p>Proteção contra Difteria, Tétano, Coqueluche, Meningite e Hepatite B</p>
+          <div class="vaccine-date">Agendada para: 15/07/2023</div>
+          <button class="btn btn-outline-primary mt-3">Ver Detalhes</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="vaccine-card mt-4">
+      <h5>Próximas Vacinas</h5>
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Vacina</th>
+              <th>Proteção</th>
+              <th>Data Prevista</th>
+              <th>Status</th>
+              <th>Ação</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Meningocócica C</td>
+              <td>Meningite C</td>
+              <td>01/08/2023</td>
+              <td><span class="vaccine-status status-pending">Pendente</span></td>
+              <td><button class="btn btn-sm btn-primary">Agendar</button></td>
+            </tr>
+            <tr>
+              <td>Pneumocócica 10V</td>
+              <td>Pneumonia</td>
+              <td>15/08/2023</td>
+              <td><span class="vaccine-status status-pending">Pendente</span></td>
+              <td><button class="btn btn-sm btn-primary">Agendar</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="vaccine-card">
+      <h5>Recomendações</h5>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">✅ Mantenha a carteira de vacinação sempre atualizada</li>
+        <li class="list-group-item">✅ Observe possíveis reações após a vacinação</li>
+        <li class="list-group-item">✅ Não deixe de vacinar mesmo com pequenas infecções</li>
+        <li class="list-group-item">✅ Anote as datas das próximas vacinas no calendário</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<script>
+// Menu mobile
+const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+const sidebar = document.querySelector('.sidebar');
+
+mobileMenuBtn.addEventListener('click', () => {
+  sidebar.style.transform = sidebar.style.transform === 'translateX(0px)' 
+    ? 'translateX(-100%)' 
+    : 'translateX(0)';
+});
+
+// Fechar menu ao clicar fora
+document.addEventListener('click', (e) => {
+  if (window.innerWidth <= 768 && 
+      !sidebar.contains(e.target) && 
+      !mobileMenuBtn.contains(e.target)) {
+    sidebar.style.transform = 'translateX(-100%)';
+  }
+});
+
+// Animação suave ao scroll
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function (e) {
+    e.preventDefault();
+    document.querySelector(this.getAttribute('href')).scrollIntoView({
+      behavior: 'smooth'
+    });
+  });
+});
+</script>
+
+</body></html>
