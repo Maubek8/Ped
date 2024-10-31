@@ -1,0 +1,446 @@
+<html><head><base href="/patients/reports">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PediGrowth - Relatórios de Pacientes</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+:root {
+  --primary-color: #4e73df;
+  --secondary-color: #858796;
+  --success-color: #1cc88a;
+  --info-color: #36b9cc;
+  --warning-color: #f6c23e;
+  --danger-color: #e74a3b;
+  --sidebar-width: 250px;
+}
+
+body {
+  margin: 0;
+  font-family: 'Nunito', sans-serif;
+  background-color: #f8f9fc;
+}
+
+.wrapper {
+  display: flex;
+}
+
+.sidebar {
+  width: var(--sidebar-width);
+  min-height: 100vh;
+  background: linear-gradient(180deg, var(--primary-color) 0%, #224abe 100%);
+  color: white;
+  position: fixed;
+  transition: all 0.3s;
+}
+
+.sidebar-brand {
+  padding: 1.5rem 1rem;
+  text-align: center;
+  font-size: 1.2rem;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.nav-item {
+  padding: 0.5rem 1rem;
+  margin: 0.2rem 0;
+}
+
+.nav-link {
+  color: rgba(255,255,255,0.8);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  padding: 0.8rem 1rem;
+  border-radius: 0.35rem;
+  transition: all 0.2s;
+}
+
+.nav-link:hover {
+  color: white;
+  background-color: rgba(255,255,255,0.1);
+}
+
+.nav-link i {
+  margin-right: 0.8rem;
+  width: 1.5rem;
+}
+
+.main-content {
+  flex: 1;
+  margin-left: var(--sidebar-width);
+  padding: 1.5rem;
+}
+
+.report-card {
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.15rem 1.75rem rgba(0,0,0,0.1);
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+  transition: transform 0.2s;
+}
+
+.report-card:hover {
+  transform: translateY(-3px);
+}
+
+.chart-container {
+  position: relative;
+  height: 300px;
+  margin: 1rem 0;
+}
+
+.metric-card {
+  background: linear-gradient(45deg, var(--primary-color), #2e59d9);
+  color: white;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.metric-icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.metric-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.metric-label {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 0;
+    position: fixed;
+    z-index: 1;
+  }
+  
+  .main-content {
+    margin-left: 0;
+  }
+  
+  .sidebar.active {
+    width: var(--sidebar-width);
+  }
+}
+
+.table-responsive {
+  margin-top: 1rem;
+}
+
+.custom-select-container {
+  margin-bottom: 1rem;
+}
+
+.filter-section {
+  background: white;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.report-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.export-btn {
+  padding: 0.5rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+</style>
+</head>
+<body>
+
+<div class="wrapper">
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-brand">
+      <h2>PediGrowth</h2>
+    </div>
+    <div class="sidebar-menu">
+      <div class="nav-item">
+        <a href="/doctor-dashboard" class="nav-link">
+          <i class="fas fa-fw fa-tachometer-alt"></i>
+          Dashboard
+        </a>
+      </div>
+      <div class="nav-item">
+        <a href="/patients" class="nav-link">
+          <i class="fas fa-fw fa-users"></i>
+          Pacientes
+        </a>
+      </div>
+      <div class="nav-item">
+        <a href="/appointments" class="nav-link">
+          <i class="fas fa-fw fa-calendar-check"></i>
+          Consultas
+        </a>
+      </div>
+      <div class="nav-item">
+        <a href="/vaccines" class="nav-link">
+          <i class="fas fa-fw fa-syringe"></i>
+          Vacinas
+        </a>
+      </div>
+      <div class="nav-item">
+        <a href="/growth" class="nav-link">
+          <i class="fas fa-fw fa-chart-line"></i>
+          Crescimento
+        </a>
+      </div>
+      <div class="nav-item">
+        <a href="/reports" class="nav-link active">
+          <i class="fas fa-fw fa-file-medical-alt"></i>
+          Relatórios
+        </a>
+      </div>
+      <div class="nav-item">
+        <a href="/settings" class="nav-link">
+          <i class="fas fa-fw fa-cog"></i>
+          Configurações
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="container-fluid">
+      <!-- Page Heading -->
+      <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Relatórios de Pacientes</h1>
+      </div>
+
+      <!-- Filter Section -->
+      <div class="filter-section">
+        <div class="row">
+          <div class="col-md-3">
+            <div class="form-group">
+              <label>Período</label>
+              <select class="form-select">
+                <option>Último mês</option>
+                <option>Últimos 3 meses</option>
+                <option>Último ano</option>
+                <option>Personalizado</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label>Faixa Etária</label>
+              <select class="form-select">
+                <option>Todas</option>
+                <option>0-1 ano</option>
+                <option>1-2 anos</option>
+                <option>2-5 anos</option>
+                <option>5+ anos</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label>Tipo de Relatório</label>
+              <select class="form-select">
+                <option>Crescimento</option>
+                <option>Vacinas</option>
+                <option>Consultas</option>
+                <option>Completo</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-3 d-flex align-items-end">
+            <button class="btn btn-primary w-100">
+              <i class="fas fa-filter"></i> Aplicar Filtros
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Metrics Row -->
+      <div class="row mb-4">
+        <div class="col-xl-3 col-md-6">
+          <div class="metric-card">
+            <div class="metric-icon">
+              <i class="fas fa-user-plus"></i>
+            </div>
+            <div class="metric-value">127</div>
+            <div class="metric-label">Novos Pacientes</div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+          <div class="metric-card">
+            <div class="metric-icon">
+              <i class="fas fa-calendar-check"></i>
+            </div>
+            <div class="metric-value">438</div>
+            <div class="metric-label">Consultas Realizadas</div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+          <div class="metric-card">
+            <div class="metric-icon">
+              <i class="fas fa-syringe"></i>
+            </div>
+            <div class="metric-value">89%</div>
+            <div class="metric-label">Cobertura Vacinal</div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+          <div class="metric-card">
+            <div class="metric-icon">
+              <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="metric-value">92%</div>
+            <div class="metric-label">Desenvolvimento Adequado</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts Row -->
+      <div class="row">
+        <div class="col-xl-6">
+          <div class="report-card">
+            <div class="report-header">
+              <h5>Distribuição por Faixa Etária</h5>
+              <button class="btn btn-outline-primary export-btn">
+                <i class="fas fa-download"></i> Exportar
+              </button>
+            </div>
+            <div class="chart-container">
+              <canvas id="ageDistributionChart"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-6">
+          <div class="report-card">
+            <div class="report-header">
+              <h5>Tendência de Crescimento</h5>
+              <button class="btn btn-outline-primary export-btn">
+                <i class="fas fa-download"></i> Exportar
+              </button>
+            </div>
+            <div class="chart-container">
+              <canvas id="growthTrendChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detailed Reports Table -->
+      <div class="report-card">
+        <div class="report-header">
+          <h5>Relatórios Detalhados</h5>
+          <button class="btn btn-outline-primary export-btn">
+            <i class="fas fa-file-excel"></i> Exportar para Excel
+          </button>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Paciente</th>
+                <th>Idade</th>
+                <th>Última Consulta</th>
+                <th>Status Vacinal</th>
+                <th>Percentil Crescimento</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>João Silva</td>
+                <td>2 anos</td>
+                <td>10/10/2023</td>
+                <td><span class="badge bg-success">Completo</span></td>
+                <td>75º</td>
+                <td>
+                  <button class="btn btn-sm btn-info"><i class="fas fa-eye"></i></button>
+                  <button class="btn btn-sm btn-primary"><i class="fas fa-print"></i></button>
+                </td>
+              </tr>
+              <!-- Add more rows as needed -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Age Distribution Chart
+const ageCtx = document.getElementById('ageDistributionChart').getContext('2d');
+new Chart(ageCtx, {
+  type: 'doughnut',
+  data: {
+    labels: ['0-1 ano', '1-2 anos', '2-5 anos', '5+ anos'],
+    datasets: [{
+      data: [30, 25, 35, 10],
+      backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e']
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'bottom'
+      }
+    }
+  }
+});
+
+// Growth Trend Chart
+const growthCtx = document.getElementById('growthTrendChart').getContext('2d');
+new Chart(growthCtx, {
+  type: 'line',
+  data: {
+    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+    datasets: [{
+      label: 'Crescimento Médio (cm)',
+      data: [65, 67, 70, 72, 74, 76],
+      borderColor: '#4e73df',
+      tension: 0.1
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      y: {
+        beginAtZero: false
+      }
+    }
+  }
+});
+
+// Mobile sidebar toggle
+document.addEventListener('DOMContentLoaded', function() {
+  const sidebarToggle = document.createElement('button');
+  sidebarToggle.classList.add('btn', 'btn-link', 'd-md-none', 'rounded-circle', 'mr-3');
+  sidebarToggle.innerHTML = '<i class="fa fa-bars"></i>';
+  
+  sidebarToggle.addEventListener('click', function() {
+    document.querySelector('.sidebar').classList.toggle('active');
+  });
+  
+  document.querySelector('.main-content').prepend(sidebarToggle);
+});
+</script>
+
+</body>
+</html>
