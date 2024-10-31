@@ -57,7 +57,7 @@ body {
 .dashboard-content {
   margin-left: 250px;
   padding: 2rem;
-  color: white;
+  background-color: white;
   overflow-y: auto;
   width: 100%;
 }
@@ -68,7 +68,7 @@ body {
 }
 
 .dashboard-header h1 {
-  color: white;
+  color: var(--primary);
   font-weight: bold;
 }
 
@@ -80,11 +80,11 @@ body {
 }
 
 .widget {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(0, 0, 0, 0.05);
   border-radius: 10px;
   padding: 1.5rem;
   text-align: center;
-  color: white;
+  color: var(--primary);
   transition: transform 0.3s, box-shadow 0.3s;
 }
 
@@ -94,27 +94,35 @@ body {
 }
 
 .widget h3 {
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   margin-bottom: 0.5rem;
 }
 
 .widget p {
   font-size: 1rem;
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(0, 0, 0, 0.7);
 }
 
 .chart-container {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(0, 0, 0, 0.05);
   border-radius: 10px;
-  padding: 2rem;
-  color: white;
-  margin-bottom: 2rem;
+  padding: 1rem;
+  color: var(--primary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .chart-container h4 {
   text-align: center;
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   margin-bottom: 1rem;
+}
+
+.chart-container canvas {
+  max-width: 200px;
+  max-height: 200px;
 }
 </style>
 </head>
@@ -160,24 +168,26 @@ body {
     </div>
 
     <!-- Chart Section -->
-    <div class="chart-container">
-      <h4>Crescimento Médio (Altura e Peso)</h4>
-      <canvas id="growthChart"></canvas>
-    </div>
+    <div class="dashboard-widgets">
+      <div class="chart-container">
+        <h4>Crescimento Médio (Altura e Peso)</h4>
+        <canvas id="growthChart"></canvas>
+      </div>
 
-    <div class="chart-container">
-      <h4>Distribuição de Idades dos Pacientes</h4>
-      <canvas id="ageDistributionChart"></canvas>
-    </div>
+      <div class="chart-container">
+        <h4>Distribuição de Idades dos Pacientes</h4>
+        <canvas id="ageDistributionChart"></canvas>
+      </div>
 
-    <div class="chart-container">
-      <h4>Cobertura de Vacinação</h4>
-      <canvas id="vaccinationCoverageChart"></canvas>
-    </div>
+      <div class="chart-container">
+        <h4>Cobertura de Vacinação</h4>
+        <canvas id="vaccinationCoverageChart"></canvas>
+      </div>
 
-    <div class="chart-container">
-      <h4>Status Nutricional</h4>
-      <canvas id="nutritionStatusChart"></canvas>
+      <div class="chart-container">
+        <h4>Status Nutricional</h4>
+        <canvas id="nutritionStatusChart"></canvas>
+      </div>
     </div>
   </div>
 </div>
