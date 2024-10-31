@@ -1,0 +1,599 @@
+<html><head><base href="/patients/patients">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PediGrowth - Prontuário do Paciente</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation/dist/chartjs-plugin-annotation.min.css" rel="stylesheet">
+
+<style>
+:root {
+  --primary-color: #4e73df;
+  --secondary-color: #858796;
+  --success-color: #1cc88a;
+  --info-color: #36b9cc;
+  --warning-color: #f6c23e;
+  --danger-color: #e74a3b;
+  --sidebar-width: 250px;
+}
+
+body {
+  margin: 0;
+  font-family: 'Nunito', sans-serif;
+  background-color: #f8f9fc;
+}
+
+.wrapper {
+  display: flex;
+}
+
+.patient-header {
+  background: linear-gradient(135deg, var(--primary-color) 0%, #224abe 100%);
+  color: white;
+  padding: 2rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.patient-stats {
+  background: white;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  box-shadow: 0 0.15rem 1.75rem rgba(0,0,0,0.1);
+  margin-bottom: 1.5rem;
+}
+
+.nav-tabs .nav-link {
+  color: var(--secondary-color);
+  font-weight: 600;
+}
+
+.nav-tabs .nav-link.active {
+  color: var(--primary-color);
+  border-bottom: 3px solid var(--primary-color);
+}
+
+.growth-chart {
+  background: white;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.timeline {
+  position: relative;
+  padding: 1rem 0;
+}
+
+.timeline-item {
+  padding: 1rem;
+  border-left: 2px solid var(--primary-color);
+  margin-left: 1rem;
+  position: relative;
+}
+
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -0.5rem;
+  top: 1.5rem;
+  width: 1rem;
+  height: 1rem;
+  background: var(--primary-color);
+  border-radius: 50%;
+}
+
+.vaccine-status {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.status-complete {
+  background-color: var(--success-color);
+  color: white;
+}
+
+.status-pending {
+  background-color: var(--warning-color);
+  color: white;
+}
+
+.status-overdue {
+  background-color: var(--danger-color);
+  color: white;
+}
+
+.vital-signs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+}
+
+.vital-sign-card {
+  background: #f8f9fc;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  text-align: center;
+}
+
+.vital-sign-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+.patient-search {
+  background: white;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 0.15rem 1.75rem rgba(0,0,0,0.1);
+}
+
+.patient-card {
+  background: white;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-left: 4px solid var(--primary-color);
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.patient-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0.15rem 1.75rem rgba(0,0,0,0.15);
+}
+
+.patient-list {
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.action-buttons {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  display: flex;
+  gap: 1rem;
+}
+
+.floating-button {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0.15rem 1.75rem rgba(0,0,0,0.15);
+}
+
+@media (max-width: 768px) {
+  .vital-signs {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+    bottom: 1rem;
+    right: 1rem;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="container-fluid py-4">
+  <!-- Patient Search -->
+  <div class="patient-search">
+    <div class="row g-3">
+      <div class="col-md-4">
+        <input type="text" class="form-control" placeholder="Buscar paciente..." id="patient-search">
+      </div>
+      <div class="col-md-3">
+        <select class="form-select" id="age-filter">
+          <option value="">Filtrar por idade</option>
+          <option value="0-2">0-2 anos</option>
+          <option value="3-5">3-5 anos</option>
+          <option value="6-12">6-12 anos</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <select class="form-select" id="status-filter">
+          <option value="">Status</option>
+          <option value="active">Ativos</option>
+          <option value="pending">Pendentes</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <button class="btn btn-primary w-100">
+          <i class="fas fa-plus"></i> Novo Paciente
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4">
+      <div class="patient-list">
+        <div class="patient-card" onclick="selectPatient(1)">
+          <div class="d-flex align-items-center">
+            <div class="patient-avatar me-3" style="width: 40px; height: 40px; background: var(--primary-color); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem;">
+              JS
+            </div>
+            <div>
+              <h6 class="mb-0">João Silva</h6>
+              <small class="text-muted">2 anos e 3 meses</small>
+            </div>
+          </div>
+        </div>
+        
+        <div class="patient-card" onclick="selectPatient(2)">
+          <div class="d-flex align-items-center">
+            <div class="patient-avatar me-3" style="width: 40px; height: 40px; background: var(--primary-color); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem;">
+              MA
+            </div>
+            <div>
+              <h6 class="mb-0">Maria Alves</h6>
+              <small class="text-muted">1 ano e 6 meses</small>
+            </div>
+          </div>
+        </div>
+        
+        <div class="patient-card" onclick="selectPatient(3)">
+          <div class="d-flex align-items-center">
+            <div class="patient-avatar me-3" style="width: 40px; height: 40px; background: var(--primary-color); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem;">
+              PS
+            </div>
+            <div>
+              <h6 class="mb-0">Pedro Santos</h6>
+              <small class="text-muted">4 anos</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-8">
+      <div id="patient-details">
+        <!-- Patient Header -->
+        <div class="patient-header">
+    <div class="row align-items-center">
+      <div class="col-auto">
+        <div class="patient-avatar" style="width: 80px; height: 80px; background: white; color: var(--primary-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: bold;">
+          JS
+        </div>
+      </div>
+      <div class="col">
+        <h1>João Silva</h1>
+        <p class="mb-0">2 anos e 3 meses | Data de Nascimento: 15/03/2022</p>
+      </div>
+      <div class="col-auto">
+        <button class="btn btn-light me-2">
+          <i class="fas fa-edit"></i> Editar
+        </button>
+        <button class="btn btn-light">
+          <i class="fas fa-print"></i> Imprimir
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vital Signs -->
+  <div class="patient-stats">
+    <h5 class="mb-4">Sinais Vitais (Última consulta: 10/10/2023)</h5>
+    <div class="vital-signs">
+      <div class="vital-sign-card">
+        <div class="vital-sign-value">12.5 kg</div>
+        <div class="text-muted">Peso</div>
+      </div>
+      <div class="vital-sign-card">
+        <div class="vital-sign-value">89 cm</div>
+        <div class="text-muted">Altura</div>
+      </div>
+      <div class="vital-sign-card">
+        <div class="vital-sign-value">48 cm</div>
+        <div class="text-muted">Perímetro Cefálico</div>
+      </div>
+      <div class="vital-sign-card">
+        <div class="vital-sign-value">36.5°C</div>
+        <div class="text-muted">Temperatura</div>
+      </div>
+      <div class="vital-sign-card">
+        <div class="vital-sign-value">98%</div>
+        <div class="text-muted">Saturação O₂</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabs Navigation -->
+  <ul class="nav nav-tabs mb-4" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" data-bs-toggle="tab" href="#overview">Visão Geral</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-bs-toggle="tab" href="#growth">Crescimento</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-bs-toggle="tab" href="#vaccines">Vacinas</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-bs-toggle="tab" href="#consults">Consultas</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-bs-toggle="tab" href="#exams">Exames</a>
+    </li>
+  </ul>
+
+  <!-- Tab Content -->
+  <div class="tab-content">
+    <!-- Overview Tab -->
+    <div class="tab-pane fade show active" id="overview">
+      <div class="row">
+        <div class="col-md-8">
+          <div class="card mb-4">
+            <div class="card-body">
+              <h5 class="card-title">Histórico de Consultas</h5>
+              <div class="timeline">
+                <div class="timeline-item">
+                  <h6>Consulta de Rotina</h6>
+                  <p class="text-muted">10/10/2023</p>
+                  <p>Desenvolvimento normal. Vacinas em dia. Alimentação adequada.</p>
+                </div>
+                <div class="timeline-item">
+                  <h6>Consulta de Emergência</h6>
+                  <p class="text-muted">15/09/2023</p>
+                  <p>Febre e dor de garganta. Prescrito antibiótico.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card mb-4">
+            <div class="card-body">
+              <h5 class="card-title">Próximas Vacinas</h5>
+              <ul class="list-unstyled">
+                <li class="mb-2">
+                  <span class="status-badge status-pending">Pendente</span>
+                  <div>Tríplice Viral (2ª dose)</div>
+                  <small class="text-muted">Prevista para: 15/11/2023</small>
+                </li>
+                <li class="mb-2">
+                  <span class="status-badge status-pending">Pendente</span>
+                  <div>DPT (Reforço)</div>
+                  <small class="text-muted">Prevista para: 20/12/2023</small>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Growth Tab -->
+    <div class="tab-pane fade" id="growth">
+      <div class="growth-chart">
+        <canvas id="weightChart"></canvas>
+      </div>
+      <div class="growth-chart">
+        <canvas id="heightChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Vaccines Tab -->
+    <div class="tab-pane fade" id="vaccines">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Carteira de Vacinação</h5>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Vacina</th>
+                  <th>Dose</th>
+                  <th>Data Prevista</th>
+                  <th>Data Aplicação</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>BCG</td>
+                  <td>Dose única</td>
+                  <td>Ao nascer</td>
+                  <td>15/03/2022</td>
+                  <td><span class="vaccine-status status-complete">Completa</span></td>
+                </tr>
+                <tr>
+                  <td>Hepatite B</td>
+                  <td>1ª dose</td>
+                  <td>Ao nascer</td>
+                  <td>15/03/2022</td>
+                  <td><span class="vaccine-status status-complete">Completa</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Consults Tab -->
+    <div class="tab-pane fade" id="consults">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Histórico Completo de Consultas</h5>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Tipo</th>
+                  <th>Motivo</th>
+                  <th>Diagnóstico</th>
+                  <th>Prescrições</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>10/10/2023</td>
+                  <td>Rotina</td>
+                  <td>Acompanhamento</td>
+                  <td>Desenvolvimento normal</td>
+                  <td>Vitamina D</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Exams Tab -->
+    <div class="tab-pane fade" id="exams">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Exames Realizados</h5>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Exame</th>
+                  <th>Resultado</th>
+                  <th>Laboratório</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>05/10/2023</td>
+                  <td>Hemograma</td>
+                  <td>Normal</td>
+                  <td>Lab Central</td>
+                  <td>
+                    <button class="btn btn-sm btn-primary">Ver PDF</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Action Buttons -->
+  <div class="action-buttons">
+    <button class="btn btn-primary floating-button" data-bs-toggle="tooltip" title="Nova Consulta">
+      <i class="fas fa-plus"></i>
+    </button>
+    <button class="btn btn-info floating-button" data-bs-toggle="tooltip" title="Adicionar Exame">
+      <i class="fas fa-flask"></i>
+    </button>
+    <button class="btn btn-success floating-button" data-bs-toggle="tooltip" title="Registrar Vacina">
+      <i class="fas fa-syringe"></i>
+    </button>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Patient selection functionality
+  function selectPatient(id) {
+    // Here you would typically make an API call to get patient details
+    // For now, we'll just highlight the selected card
+    document.querySelectorAll('.patient-card').forEach(card => {
+      card.style.backgroundColor = 'white';
+    });
+    event.currentTarget.style.backgroundColor = '#f8f9fc';
+  }
+
+  // Add search functionality
+  document.getElementById('patient-search').addEventListener('input', function(e) {
+    const searchTerm = e.target.value.toLowerCase();
+    document.querySelectorAll('.patient-card').forEach(card => {
+      const patientName = card.querySelector('h6').textContent.toLowerCase();
+      card.style.display = patientName.includes(searchTerm) ? 'block' : 'none';
+    });
+  });
+
+  // Initialize tooltips
+  var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+  var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl)
+  });
+
+  // Weight Chart
+  const weightCtx = document.getElementById('weightChart').getContext('2d');
+  new Chart(weightCtx, {
+    type: 'line',
+    data: {
+      labels: ['0m', '2m', '4m', '6m', '8m', '10m', '12m', '15m', '18m', '21m', '24m'],
+      datasets: [{
+        label: 'Peso (kg)',
+        data: [3.5, 5.2, 6.8, 7.9, 8.9, 9.6, 10.2, 10.9, 11.5, 12.0, 12.5],
+        borderColor: '#4e73df',
+        tension: 0.4,
+        fill: false
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        title: {
+          display: true,
+          text: 'Curva de Peso'
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: false
+        }
+      }
+    }
+  });
+
+  // Height Chart
+  const heightCtx = document.getElementById('heightChart').getContext('2d');
+  new Chart(heightCtx, {
+    type: 'line',
+    data: {
+      labels: ['0m', '2m', '4m', '6m', '8m', '10m', '12m', '15m', '18m', '21m', '24m'],
+      datasets: [{
+        label: 'Altura (cm)',
+        data: [50, 58, 63, 67, 71, 74, 76, 79, 82, 85, 89],
+        borderColor: '#1cc88a',
+        tension: 0.4,
+        fill: false
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        title: {
+          display: true,
+          text: 'Curva de Crescimento'
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: false
+        }
+      }
+    }
+  });
+});
+</script>
+
+</body>
+</html>
