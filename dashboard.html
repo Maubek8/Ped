@@ -14,15 +14,51 @@
 
 body {
   font-family: 'Segoe UI', sans-serif;
-  background-color: #f8f9fa;
   margin: 0;
   padding: 0;
+  background: linear-gradient(135deg, #4B89DC 0%, #37B883 100%);
+  overflow-x: hidden;
 }
 
-.container {
-  max-width: 1200px;
-  margin: auto;
+.container-fluid {
+  display: flex;
+  height: 100vh;
+}
+
+.sidebar {
+  width: 250px;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  color: white;
+  position: fixed;
+  height: 100%;
+}
+
+.sidebar a {
+  text-decoration: none;
+  color: white;
+  font-size: 1.2rem;
+  width: 100%;
+  padding: 0.8rem 1.5rem;
+  text-align: left;
+  border-radius: 5px;
+  transition: background 0.3s, color 0.3s;
+}
+
+.sidebar a:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.dashboard-content {
+  margin-left: 250px;
   padding: 2rem;
+  color: white;
+  overflow-y: auto;
+  width: 100%;
 }
 
 .dashboard-header {
@@ -30,53 +66,81 @@ body {
   margin-bottom: 2rem;
 }
 
-h1 {
-  color: var(--primary);
-  font-weight: bold;
-}
-
-.dashboard-buttons {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 1rem;
-}
-
-.dashboard-button {
-  background-color: white;
-  border: 2px solid var(--primary);
-  border-radius: 10px;
-  padding: 1rem;
-  text-align: center;
-  color: var(--primary);
-  font-size: 1.2rem;
-  font-weight: bold;
-  transition: transform 0.3s, box-shadow 0.3s;
-  text-decoration: none;
-}
-
-.dashboard-button:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+.dashboard-header h1 {
   color: white;
-  background-color: var(--primary);
+  font-weight: bold;
+}
+
+.dashboard-widgets {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.widget {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 1.5rem;
+  text-align: center;
+  color: white;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.widget:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.widget h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.widget p {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.8);
 }
 </style>
 </head>
 <body>
 
-<div class="container">
-  <div class="dashboard-header">
-    <h1>Bem-vindo ao Dashboard PediGrowth</h1>
+<div class="container-fluid">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <a href="dashboard.html">Dashboard</a>
+    <a href="pacientes.html">Pacientes</a>
+    <a href="consultas.html">Consultas</a>
+    <a href="vacinas.html">Vacinas</a>
+    <a href="crescimento.html">Crescimento</a>
+    <a href="relatorios.html">Relatórios</a>
+    <a href="configuracoes.html">Configurações</a>
   </div>
 
-  <div class="dashboard-buttons">
-    <a href="dashboard.html" class="dashboard-button">Dashboard</a>
-    <a href="pacientes.html" class="dashboard-button">Pacientes</a>
-    <a href="consultas.html" class="dashboard-button">Consultas</a>
-    <a href="vacinas.html" class="dashboard-button">Vacinas</a>
-    <a href="crescimento.html" class="dashboard-button">Crescimento</a>
-    <a href="relatorios.html" class="dashboard-button">Relatórios</a>
-    <a href="configuracoes.html" class="dashboard-button">Configurações</a>
+  <!-- Dashboard Content -->
+  <div class="dashboard-content">
+    <div class="dashboard-header">
+      <h1>Bem-vindo ao Dashboard PediGrowth</h1>
+      <p>Acompanhe os dados de crescimento e desenvolvimento em um só lugar.</p>
+    </div>
+
+    <div class="dashboard-widgets">
+      <div class="widget">
+        <h3>Total de Pacientes</h3>
+        <p>230</p>
+      </div>
+      <div class="widget">
+        <h3>Consultas Hoje</h3>
+        <p>15</p>
+      </div>
+      <div class="widget">
+        <h3>Vacinas Pendentes</h3>
+        <p>8</p>
+      </div>
+      <div class="widget">
+        <h3>Relatórios Emitidos</h3>
+        <p>23</p>
+      </div>
+    </div>
   </div>
 </div>
 
