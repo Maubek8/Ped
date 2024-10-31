@@ -259,15 +259,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
   
-authForm.addEventListener('submit', (e) => {
-  e.preventDefault();
-  const selectedRole = document.querySelector('.role-card.selected').dataset.role;
-  
-  if (selectedRole === 'professional') {
-    window.location.href = '/dashboard.html?role=professional';
-  } else {
-    window.location.href = '/dashboard.html?role=family';
-  }
+ authForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const selectedRole = document.querySelector('.role-card.selected').dataset.role;
+    
+    if (selectedRole === 'professional') {
+      window.location.href = 'dashboard.html';
+    } else {
+      window.location.href = 'dashboard.html';
+    }
+  });
 });
 
 </script>
