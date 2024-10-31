@@ -1,165 +1,286 @@
-<html><head><base href="/">
+<html><head><base href="/patients">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard de Crescimento Infantil</title>
+<title>PediGrowth - Pacientes</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+
 <style>
-  :root {
-    --primary: #4B89DC;
-    --secondary: #FF7675;
-    --success: #37B883;
-    --warning: #FFB142;
-    --danger: #FC5C65;
+:root {
+  --primary-color: #4e73df;
+  --secondary-color: #858796;
+  --success-color: #1cc88a;
+  --info-color: #36b9cc;
+  --warning-color: #f6c23e;
+  --danger-color: #e74a3b;
+  --sidebar-width: 250px;
+}
+
+body {
+  margin: 0;
+  font-family: 'Nunito', sans-serif;
+  background-color: #f8f9fc;
+}
+
+.wrapper {
+  display: flex;
+}
+
+.sidebar {
+  width: var(--sidebar-width);
+  min-height: 100vh;
+  background: linear-gradient(180deg, var(--primary-color) 0%, #224abe 100%);
+  color: white;
+  position: fixed;
+  transition: all 0.3s;
+}
+
+.sidebar-brand {
+  padding: 1.5rem 1rem;
+  text-align: center;
+  font-size: 1.2rem;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.nav-item {
+  padding: 0.5rem 1rem;
+  margin: 0.2rem 0;
+}
+
+.nav-link {
+  color: rgba(255,255,255,0.8);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  padding: 0.8rem 1rem;
+  border-radius: 0.35rem;
+  transition: all 0.2s;
+}
+
+.nav-link:hover {
+  color: white;
+  background-color: rgba(255,255,255,0.1);
+}
+
+.nav-link i {
+  margin-right: 0.8rem;
+  width: 1.5rem;
+}
+
+.main-content {
+  flex: 1;
+  margin-left: var(--sidebar-width);
+  padding: 1.5rem;
+}
+
+.content-card {
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.15rem 1.75rem rgba(0,0,0,0.1);
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.patient-card {
+  transition: transform 0.2s;
+}
+
+.patient-card:hover {
+  transform: translateY(-3px);
+}
+
+.search-bar {
+  margin-bottom: 1.5rem;
+}
+
+.patient-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.patient-info-icon {
+  font-size: 0.9rem;
+  color: var(--info-color);
+  margin-left: 0.3rem;
+  cursor: help;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 0;
+    position: fixed;
+    z-index: 1;
   }
-
-  body {
-    font-family: 'Segoe UI', sans-serif;
-    background: #f5f6fa;
+  
+  .main-content {
+    margin-left: 0;
   }
-
-  .dashboard-card {
-    background: white;
-    border-radius: 15px;
-    padding: 20px;
-    margin: 10px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    transition: transform 0.2s;
+  
+  .sidebar.active {
+    width: var(--sidebar-width);
   }
+}
 
-  .dashboard-card:hover {
-    transform: translateY(-5px);
-  }
+.status-badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
 
-  .metric-card {
-    text-align: center;
-    padding: 15px;
-    border-radius: 12px;
-    color: white;
-  }
+.status-active {
+  background-color: var(--success-color);
+  color: white;
+}
 
-  .weight-card { background: var(--primary); }
-  .height-card { background: var(--secondary); }
-  .imc-card { background: var(--success); }
+.status-inactive {
+  background-color: var(--secondary-color);
+  color: white;
+}
 
-  .chart-container {
-    position: relative;
-    margin: auto;
-    height: 300px;
-  }
+.patient-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
 
-  .btn-action {
-    border-radius: 25px;
-    padding: 10px 20px;
-    margin: 5px;
-    transition: all 0.3s;
-  }
-
-  .btn-action:hover {
-    transform: scale(1.05);
-  }
-
-  .status-indicator {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    display: inline-block;
-    margin-right: 5px;
-  }
-
-  .status-normal { background: var(--success); }
-  .status-warning { background: var(--warning); }
-  .status-alert { background: var(--danger); }
-
-  @media (max-width: 768px) {
-    .dashboard-card {
-      margin: 10px 0;
-    }
-  }
+.form-floating {
+  margin-bottom: 1rem;
+}
 </style>
 </head>
 <body>
 
-<div class="container-fluid py-4">
-  <h2 class="mb-4">Dashboard de Crescimento - João Silva (2 anos)</h2>
-
-  <!-- Métricas Principais -->
-  <div class="row">
-    <div class="col-md-4">
-      <div class="dashboard-card metric-card weight-card">
-        <h3>Peso Atual</h3>
-        <h2>12.5 kg</h2>
-        <p>↑ 0.5kg último mês</p>
+<div class="wrapper">
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-brand">
+      <h2>PediGrowth</h2>
+    </div>
+    <div class="sidebar-menu">
+      <div class="nav-item">
+        <a href="/doctor-dashboard" class="nav-link">
+          <i class="fas fa-fw fa-tachometer-alt"></i>
+          Dashboard
+        </a>
+      </div>
+      <div class="nav-item">
+        <a href="/patients" class="nav-link active">
+          <i class="fas fa-fw fa-users"></i>
+          Pacientes
+        </a>
+      </div>
+      <div class="nav-item">
+        <a href="/appointments" class="nav-link">
+          <i class="fas fa-fw fa-calendar-check"></i>
+          Consultas
+        </a>
+      </div>
+      <div class="nav-item">
+        <a href="/vaccines" class="nav-link">
+          <i class="fas fa-fw fa-syringe"></i>
+          Vacinas
+        </a>
+      </div>
+      <div class="nav-item">
+        <a href="/growth" class="nav-link">
+          <i class="fas fa-fw fa-chart-line"></i>
+          Crescimento
+        </a>
+      </div>
+      <div class="nav-item">
+        <a href="/reports" class="nav-link">
+          <i class="fas fa-fw fa-file-medical-alt"></i>
+          Relatórios
+        </a>
+      </div>
+      <div class="nav-item">
+        <a href="/settings" class="nav-link">
+          <i class="fas fa-fw fa-cog"></i>
+          Configurações
+        </a>
       </div>
     </div>
-    <div class="col-md-4">
-      <div class="dashboard-card metric-card height-card">
-        <h3>Altura Atual</h3>
-        <h2>88 cm</h2>
-        <p>↑ 2cm último mês</p>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="dashboard-card metric-card imc-card">
-        <h3>IMC</h3>
-        <h2>16.2</h2>
-        <p>Peso adequado</p>
-      </div>
-    </div>
-  </div>
+  </nav>
 
-  <!-- Botões de Ação -->
-  <div class="row mt-4">
-    <div class="col-12 text-center">
-      <button class="btn btn-primary btn-action" onclick="showAddMeasurement()">
-        + Nova Medição
-      </button>
-      <button class="btn btn-success btn-action" onclick="exportData()">
-        📊 Exportar Dados
-      </button>
-      <button class="btn btn-warning btn-action" onclick="showVaccines()">
-        💉 Vacinas
-      </button>
-    </div>
-  </div>
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="container-fluid">
+      <!-- Page Heading -->
+      <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Gerenciamento de Pacientes</h1>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPatientModal">
+          <i class="fas fa-plus fa-sm"></i> Novo Paciente
+        </button>
+      </div>
 
-  <!-- Gráficos -->
-  <div class="row mt-4">
-    <div class="col-md-6">
-      <div class="dashboard-card">
-        <h4>Curva de Crescimento - Peso</h4>
-        <div class="chart-container">
-          <canvas id="weightChart"></canvas>
+      <!-- Search and Filter Section -->
+      <div class="content-card search-bar">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="input-group">
+              <span class="input-group-text"><i class="fas fa-search"></i></span>
+              <input type="text" class="form-control" id="searchPatients" placeholder="Buscar pacientes...">
+            </div>
+          </div>
+          <div class="col-md-8">
+            <div class="btn-group float-end" role="group">
+              <button type="button" class="btn btn-outline-primary">Todos</button>
+              <button type="button" class="btn btn-outline-primary">Ativos</button>
+              <button type="button" class="btn btn-outline-primary">Inativos</button>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="col-md-6">
-      <div class="dashboard-card">
-        <h4>Curva de Crescimento - Altura</h4>
-        <div class="chart-container">
-          <canvas id="heightChart"></canvas>
-        </div>
-      </div>
-    </div>
-  </div>
 
-  <!-- Histórico de Medições -->
-  <div class="row mt-4">
-    <div class="col-12">
-      <div class="dashboard-card">
-        <h4>Histórico de Medições</h4>
+      <!-- Patients Table -->
+      <div class="content-card">
         <div class="table-responsive">
-          <table class="table">
+          <table class="table table-hover" id="patientsTable">
             <thead>
               <tr>
-                <th>Data</th>
-                <th>Peso</th>
-                <th>Altura</th>
-                <th>IMC</th>
+                <th>Paciente</th>
+                <th>Data Nasc.</th>
+                <th>Responsável</th>
+                <th>Última Consulta</th>
                 <th>Status</th>
+                <th>Ações</th>
               </tr>
             </thead>
-            <tbody id="measurementHistory">
+            <tbody>
+              <tr>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <div class="patient-avatar me-2">JS</div>
+                    João Silva
+                  </div>
+                </td>
+                <td>15/03/2022</td>
+                <td>Maria Silva</td>
+                <td>10/10/2023</td>
+                <td><span class="status-badge status-active">Ativo</span></td>
+                <td>
+                  <div class="patient-actions">
+                    <button class="btn btn-sm btn-info" data-bs-toggle="tooltip" title="Ver Prontuário">
+                      <i class="fas fa-folder-open"></i>
+                    </button>
+                    <button class="btn btn-sm btn-primary" data-bs-toggle="tooltip" title="Editar">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-sm btn-danger" data-bs-toggle="tooltip" title="Desativar">
+                      <i class="fas fa-user-times"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <!-- More patient rows... -->
             </tbody>
           </table>
         </div>
@@ -168,166 +289,121 @@
   </div>
 </div>
 
-<!-- Modal de Nova Medição -->
-<div class="modal fade" id="measurementModal" tabindex="-1">
-  <div class="modal-dialog">
+<!-- Add Patient Modal -->
+<div class="modal fade" id="addPatientModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Nova Medição</h5>
+        <h5 class="modal-title">Adicionar Novo Paciente</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
-        <form id="measurementForm">
-          <div class="mb-3">
-            <label class="form-label">Peso (kg)</label>
-            <input type="number" class="form-control" id="weightInput" step="0.1" required>
+        <form id="newPatientForm">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="patientName" placeholder="Nome completo">
+                <label for="patientName">Nome completo</label>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-floating mb-3">
+                <input type="date" class="form-control" id="birthDate">
+                <label for="birthDate">Data de Nascimento</label>
+              </div>
+            </div>
           </div>
-          <div class="mb-3">
-            <label class="form-label">Altura (cm)</label>
-            <input type="number" class="form-control" id="heightInput" required>
+          
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="parentName" placeholder="Nome do responsável">
+                <label for="parentName">Nome do Responsável</label>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-floating mb-3">
+                <input type="tel" class="form-control" id="phoneNumber" placeholder="Telefone">
+                <label for="phoneNumber">Telefone</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-floating mb-3">
+                <input type="email" class="form-control" id="email" placeholder="Email">
+                <label for="email">Email</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-floating mb-3">
+                <textarea class="form-control" id="observations" style="height: 100px" placeholder="Observações"></textarea>
+                <label for="observations">Observações Iniciais</label>
+              </div>
+            </div>
           </div>
         </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-primary" onclick="saveMeasurement()">Salvar</button>
+        <button type="button" class="btn btn-primary">Salvar Paciente</button>
       </div>
     </div>
   </div>
 </div>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+
 <script>
-// Dados de exemplo
-const measurementData = {
-    dates: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
-    weights: [11.0, 11.3, 11.7, 12.0, 12.2, 12.5],
-    heights: [82, 83, 84, 85, 86, 88]
-};
-
-// Configuração dos gráficos
-const weightChart = new Chart(document.getElementById('weightChart'), {
-    type: 'line',
-    data: {
-        labels: measurementData.dates,
-        datasets: [{
-            label: 'Peso (kg)',
-            data: measurementData.weights,
-            borderColor: '#4B89DC',
-            tension: 0.4,
-            fill: false
-        }]
+$(document).ready(function() {
+  // Initialize DataTable
+  $('#patientsTable').DataTable({
+    language: {
+      url: "//cdn.datatables.net/plug-ins/1.11.5/i18n/pt-BR.json"
     },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-            y: {
-                beginAtZero: false
-            }
-        }
-    }
+    pageLength: 10,
+    order: [[0, 'asc']]
+  });
+
+  // Initialize tooltips
+  var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+  var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl)
+  });
+
+  // Search functionality
+  $("#searchPatients").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $("#patientsTable tbody tr").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+
+  // Form validation
+  $('#newPatientForm').on('submit', function(e) {
+    e.preventDefault();
+    // Add your validation and submission logic here
+  });
+
+  // Mobile sidebar toggle
+  const sidebarToggle = document.createElement('button');
+  sidebarToggle.classList.add('btn', 'btn-link', 'd-md-none', 'rounded-circle', 'mr-3');
+  sidebarToggle.innerHTML = '<i class="fa fa-bars"></i>';
+  
+  sidebarToggle.addEventListener('click', function() {
+    document.querySelector('.sidebar').classList.toggle('active');
+  });
+  
+  document.querySelector('.main-content').prepend(sidebarToggle);
 });
-
-const heightChart = new Chart(document.getElementById('heightChart'), {
-    type: 'line',
-    data: {
-        labels: measurementData.dates,
-        datasets: [{
-            label: 'Altura (cm)',
-            data: measurementData.heights,
-            borderColor: '#FF7675',
-            tension: 0.4,
-            fill: false
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-            y: {
-                beginAtZero: false
-            }
-        }
-    }
-});
-
-// Funções de interação
-function showAddMeasurement() {
-    const modal = new bootstrap.Modal(document.getElementById('measurementModal'));
-    modal.show();
-}
-
-function saveMeasurement() {
-    const weight = document.getElementById('weightInput').value;
-    const height = document.getElementById('heightInput').value;
-    
-    if (weight && height) {
-        // Adicionar aos dados
-        measurementData.dates.push(new Date().toLocaleDateString('pt-BR', {month: 'short'}));
-        measurementData.weights.push(parseFloat(weight));
-        measurementData.heights.push(parseFloat(height));
-        
-        // Atualizar gráficos
-        weightChart.update();
-        heightChart.update();
-        
-        // Atualizar histórico
-        updateMeasurementHistory(weight, height);
-        
-        // Fechar modal
-        bootstrap.Modal.getInstance(document.getElementById('measurementModal')).hide();
-    }
-}
-
-function updateMeasurementHistory(weight, height) {
-    const tbody = document.getElementById('measurementHistory');
-    const row = tbody.insertRow(0);
-    const imc = (weight / Math.pow(height/100, 2)).toFixed(1);
-    
-    row.innerHTML = `
-        <td>${new Date().toLocaleDateString('pt-BR')}</td>
-        <td>${weight} kg</td>
-        <td>${height} cm</td>
-        <td>${imc}</td>
-        <td><span class="status-indicator ${getStatusClass(imc)}"></span>${getStatusText(imc)}</td>
-    `;
-}
-
-function getStatusClass(imc) {
-    if (imc < 15) return 'status-alert';
-    if (imc > 18) return 'status-warning';
-    return 'status-normal';
-}
-
-function getStatusText(imc) {
-    if (imc < 15) return 'Abaixo do peso';
-    if (imc > 18) return 'Acima do peso';
-    return 'Peso adequado';
-}
-
-function exportData() {
-    const data = {
-        weights: measurementData.weights,
-        heights: measurementData.heights,
-        dates: measurementData.dates
-    };
-    const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'crescimento-dados.json';
-    a.click();
-}
-
-function showVaccines() {
-    alert('Calendário de vacinação em desenvolvimento!');
-}
-
-// Inicializar histórico
-updateMeasurementHistory(12.5, 88);
-updateMeasurementHistory(12.2, 86);
-updateMeasurementHistory(11.7, 84);
 </script>
 
-</body></html>
+</body>
+</html>
